@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Drzewo rozwiązywania równań jednorodnych</title>
+    <style>
+      :root {
+        color-scheme: light;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: #202124;
+        background: #fff;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-width: 320px;
+        background: #fff;
+      }
+
+      main {
+        width: min(100% - 32px, 920px);
+        margin: 0 auto;
+        padding: 48px 0 64px;
+      }
+
+      h1 {
+        margin: 0 0 8px;
+        font-size: clamp(1.5rem, 4vw, 2rem);
+        text-align: center;
+      }
+
+      .intro {
+        margin: 0 0 36px;
+        color: #5f6368;
+        text-align: center;
+      }
+
+      .tree,
+      .tree ul {
+        display: flex;
+        justify-content: center;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .tree ul {
+        position: relative;
+        padding-top: 28px;
+      }
+
+      .tree li {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 0 12px;
+        text-align: center;
+      }
+
+      .tree li::before,
+      .tree li::after {
+        position: absolute;
+        top: 0;
+        right: 50%;
+        width: 50%;
+        height: 28px;
+        border-top: 1px solid #c7c9cc;
+        content: "";
+      }
+
+      .tree li::after {
+        right: auto;
+        left: 50%;
+        border-left: 1px solid #c7c9cc;
+      }
+
+      .tree li:only-child::before,
+      .tree li:only-child::after {
+        display: none;
+      }
+
+      .tree li:only-child {
+        padding-top: 0;
+      }
+
+      .tree li:first-child::before,
+      .tree li:last-child::after {
+        border: 0;
+      }
+
+      .tree li:last-child::before {
+        border-right: 1px solid #c7c9cc;
+        border-radius: 0 6px 0 0;
+      }
+
+      .tree li:first-child::after {
+        border-radius: 6px 0 0;
+      }
+
+      .tree ul ul::before {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        height: 28px;
+        border-left: 1px solid #c7c9cc;
+        content: "";
+      }
+
+      .tree > ul > li {
+        padding: 0;
+      }
+
+      .tree > ul > li::before,
+      .tree > ul > li::after,
+      .tree > ul > li > ul::before {
+        display: none;
+      }
+
+      .node {
+        position: relative;
+        z-index: 1;
+        max-width: 310px;
+        padding: 14px 18px;
+        border: 1px solid #dadce0;
+        border-radius: 10px;
+        background: #fff;
+        line-height: 1.5;
+      }
+
+      .node strong {
+        display: block;
+        margin-bottom: 4px;
+      }
+
+      .root {
+        border-color: #8ab4f8;
+        background: #f8fbff;
+      }
+
+      .branch-label {
+        margin: 0 0 8px;
+        color: #5f6368;
+        font-size: 0.9rem;
+      }
+
+      .math {
+        font-family: "Cambria Math", Cambria, Georgia, serif;
+        font-size: 1.08rem;
+      }
+
+      @media (max-width: 680px) {
+        .tree,
+        .tree ul {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .tree ul {
+          padding-top: 20px;
+        }
+
+        .tree li {
+          padding: 0 0 20px;
+        }
+
+        .tree li::before,
+        .tree li::after,
+        .tree ul ul::before {
+          display: none;
+        }
+
+        .tree li:not(:last-child)::after {
+          top: auto;
+          right: auto;
+          bottom: 0;
+          left: 50%;
+          display: block;
+          width: 0;
+          height: 20px;
+          border: 0;
+          border-left: 1px solid #c7c9cc;
+        }
+
+        .node {
+          width: min(100%, 310px);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Drzewo rozwiązywania równań jednorodnych</h1>
+      <p class="intro">Schemat dla liniowego równania różniczkowego pierwszego rzędu.</p>
+
+      <nav class="tree" aria-label="Procedura rozwiązywania równania jednorodnego">
+        <ul>
+          <li>
+            <div class="node root">
+              <strong>Postać standardowa</strong>
+              <span class="math">y′ + P(x)y = 0</span>
+              <br>
+              Uporządkuj równanie na przedziale, na którym współczynniki są określone.
+            </div>
+            <ul>
+              <li>
+                <p class="branch-label">Przypadek szczególny</p>
+                <div class="node">
+                  <strong>Sprawdź y = 0</strong>
+                  Jest rozwiązaniem równania i należy do rozwiązania ogólnego.
+                </div>
+              </li>
+              <li>
+                <p class="branch-label">Dla y ≠ 0</p>
+                <div class="node">
+                  <strong>Rozdziel zmienne</strong>
+                  <span class="math">dy / y = −P(x) dx</span>
+                </div>
+                <ul>
+                  <li>
+                    <div class="node">
+                      <strong>Scałkuj obie strony</strong>
+                      <span class="math">ln |y| = −∫ P(x) dx + C</span>
+                    </div>
+                    <ul>
+                      <li>
+                        <div class="node">
+                          <strong>Wyznacz y i sprawdź wynik</strong>
+                          <span class="math">y = C · e<sup>−∫P(x)dx</sup></span>
+                          <br>
+                          Stała <span class="math">C ∈ ℝ</span>; wzór obejmuje też rozwiązanie zerowe.
+                        </div>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+    </main>
+  </body>
+</html>
