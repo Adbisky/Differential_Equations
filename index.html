@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="pl">
+<html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Drzewo rozwiązywania równań jednorodnych</title>
+    <title>Homogeneous Equation Solution Tree</title>
     <style>
       :root {
         color-scheme: light;
@@ -195,45 +195,45 @@
   </head>
   <body>
     <main>
-      <h1>Drzewo rozwiązywania równań jednorodnych</h1>
-      <p class="intro">Schemat dla liniowego równania różniczkowego pierwszego rzędu.</p>
+      <h1>Homogeneous Equation Solution Tree</h1>
+      <p class="intro">A guide to first-order linear differential equations.</p>
 
-      <nav class="tree" aria-label="Procedura rozwiązywania równania jednorodnego">
+      <nav class="tree" aria-label="Procedure for solving a homogeneous equation">
         <ul>
           <li>
             <div class="node root">
-              <strong>Postać standardowa</strong>
+              <strong>Standard form</strong>
               <span class="math">y′ + P(x)y = 0</span>
               <br>
-              Uporządkuj równanie na przedziale, na którym współczynniki są określone.
+              Rearrange the equation on an interval where the coefficients are defined.
             </div>
             <ul>
               <li>
-                <p class="branch-label">Przypadek szczególny</p>
+                <p class="branch-label">Special case</p>
                 <div class="node">
-                  <strong>Sprawdź y = 0</strong>
-                  Jest rozwiązaniem równania i należy do rozwiązania ogólnego.
+                  <strong>Check y = 0</strong>
+                  It is a solution of the equation and is included in the general solution.
                 </div>
               </li>
               <li>
-                <p class="branch-label">Dla y ≠ 0</p>
+                <p class="branch-label">For y ≠ 0</p>
                 <div class="node">
-                  <strong>Rozdziel zmienne</strong>
+                  <strong>Separate variables</strong>
                   <span class="math">dy / y = −P(x) dx</span>
                 </div>
                 <ul>
                   <li>
                     <div class="node">
-                      <strong>Scałkuj obie strony</strong>
+                      <strong>Integrate both sides</strong>
                       <span class="math">ln |y| = −∫ P(x) dx + C</span>
                     </div>
                     <ul>
                       <li>
                         <div class="node">
-                          <strong>Wyznacz y i sprawdź wynik</strong>
+                          <strong>Solve for y and verify the result</strong>
                           <span class="math">y = C · e<sup>−∫P(x)dx</sup></span>
                           <br>
-                          Stała <span class="math">C ∈ ℝ</span>; wzór obejmuje też rozwiązanie zerowe.
+                          The constant <span class="math">C ∈ ℝ</span>; the formula also includes the zero solution.
                         </div>
                       </li>
                     </ul>
