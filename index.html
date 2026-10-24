@@ -3,7 +3,22 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Homogeneous Equation Solution Tree</title>
+    <title>First-Order Linear Differential Equations</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.19.1/dist/katex.min.css"
+      integrity="sha384-WwGtaC6ywCHxA5cstpj/3+xIZvTez8dq2IcBQaXRkenHZ7FVVq1ZROtURwfbtTlG"
+      crossorigin="anonymous">
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.19.1/dist/katex.min.js"
+      integrity="sha384-a1WQdjRj162i159OYq041X6I4K8NenkrI09LlPmiHg0YOb7CR+wJOraXwK9abpnE"
+      crossorigin="anonymous"></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.19.1/dist/contrib/auto-render.min.js"
+      integrity="sha384-bjyGPfbij8/NDKJhSGZNP/khQVgtHUE5exjm4Ydllo42FwIgYsdLO2lXGmRBf5Mz"
+      crossorigin="anonymous"></script>
     <style>
       :root {
         color-scheme: light;
@@ -23,227 +38,623 @@
       }
 
       main {
-        width: min(100% - 32px, 920px);
-        margin: 0 auto;
-        padding: 48px 0 64px;
+        width: max-content;
+        min-width: 100%;
+        margin: 0;
+        padding: 48px 32px 64px;
       }
 
       h1 {
         margin: 0 0 8px;
         font-size: clamp(1.5rem, 4vw, 2rem);
-        text-align: center;
+        text-align: left;
       }
 
       .intro {
         margin: 0 0 36px;
         color: #5f6368;
-        text-align: center;
+        text-align: left;
       }
 
-      .tree,
-      .tree ul {
+      .page-controls {
         display: flex;
-        justify-content: center;
-        margin: 0;
-        padding: 0;
-        list-style: none;
+        justify-content: flex-start;
+        margin-bottom: 16px;
       }
 
-      .tree ul {
-        position: relative;
-        padding-top: 28px;
-      }
-
-      .tree li {
-        position: relative;
+      .language-switch {
         display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 0 12px;
-        text-align: center;
+        gap: 8px;
       }
 
-      .tree li::before,
-      .tree li::after {
-        position: absolute;
-        top: 0;
-        right: 50%;
-        width: 50%;
-        height: 28px;
-        border-top: 1px solid #c7c9cc;
-        content: "";
-      }
-
-      .tree li::after {
-        right: auto;
-        left: 50%;
-        border-left: 1px solid #c7c9cc;
-      }
-
-      .tree li:only-child::before,
-      .tree li:only-child::after {
-        display: none;
-      }
-
-      .tree li:only-child {
-        padding-top: 0;
-      }
-
-      .tree li:first-child::before,
-      .tree li:last-child::after {
-        border: 0;
-      }
-
-      .tree li:last-child::before {
-        border-right: 1px solid #c7c9cc;
-        border-radius: 0 6px 0 0;
-      }
-
-      .tree li:first-child::after {
-        border-radius: 6px 0 0;
-      }
-
-      .tree ul ul::before {
-        position: absolute;
-        top: 0;
-        left: 50%;
-        height: 28px;
-        border-left: 1px solid #c7c9cc;
-        content: "";
-      }
-
-      .tree > ul > li {
-        padding: 0;
-      }
-
-      .tree > ul > li::before,
-      .tree > ul > li::after,
-      .tree > ul > li > ul::before {
-        display: none;
-      }
-
-      .node {
-        position: relative;
-        z-index: 1;
-        max-width: 310px;
-        padding: 14px 18px;
-        border: 2px solid #d93025;
-        border-radius: 10px;
+      .language-button {
+        padding: 6px 10px;
+        border: 1px solid #c4c7c5;
+        border-radius: 6px;
         background: #fff;
-        line-height: 1.5;
+        color: #202124;
+        cursor: pointer;
+        font: inherit;
       }
 
-      .node strong {
+      .language-button[aria-pressed="true"] {
+        border-color: #1a73e8;
+        background: #f1f7ff;
+        color: #174ea6;
+        font-weight: 600;
+      }
+
+      .solution-grid {
+        display: grid;
+        grid-template-columns: var(--grid-template, repeat(4, 280px));
+        width: max-content;
+        gap: 14px 24px;
+      }
+
+      .column-headings,
+      .solution-rows,
+      .solution-row {
+        display: contents;
+      }
+
+      .column-heading {
+        margin: 0;
+        font-size: 1.2rem;
+        white-space: nowrap;
+      }
+
+      .column-heading h2 {
+        margin: 0;
+        font-size: inherit;
+        white-space: nowrap;
+      }
+
+      .procedure-heading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+      }
+
+      .toggle-examples {
+        padding: 6px 12px;
+        border: 1px solid #1a73e8;
+        border-radius: 6px;
+        background: #fff;
+        color: #174ea6;
+        cursor: pointer;
+        font: inherit;
+        font-size: 0.8rem;
+        font-weight: 600;
+      }
+
+      .toggle-examples:hover {
+        background: #f1f7ff;
+      }
+
+      .table-cell {
+        width: 100%;
+        min-width: 280px;
+        padding: 14px 18px;
+        border: 2px solid #1a73e8;
+        border-radius: 10px;
+        line-height: 1.5;
+        text-align: left;
+      }
+
+      .cell-content {
+        width: 100%;
+      }
+
+      .cell-content .katex-display {
+        padding-bottom: 4px;
+        overflow: visible;
+        white-space: nowrap;
+      }
+
+      .cell-content .katex {
+        white-space: nowrap;
+      }
+
+      .cell-content .math {
+        display: block;
+        white-space: nowrap;
+      }
+
+      .homogeneous-cell {
+        background: #f1f7ff;
+      }
+
+      .table-cell strong {
         display: block;
         margin-bottom: 4px;
       }
 
-      .root {
-        border-color: #d93025;
+      .worked-example-cell {
         background: #f8fbff;
       }
 
-      .branch-label {
-        margin: 0 0 8px;
-        color: #5f6368;
-        font-size: 0.9rem;
+      .nonhomogeneous-cell {
+        border-color: #4285f4;
+        background: #f3f8ff;
+      }
+
+      .mobile-column-label {
+        display: none;
+      }
+
+      [hidden] {
+        display: none !important;
       }
 
       .math {
-        font-family: "Cambria Math", Cambria, Georgia, serif;
         font-size: 1.08rem;
       }
 
-      @media (max-width: 680px) {
-        .tree,
-        .tree ul {
-          flex-direction: column;
-          align-items: center;
-        }
-
-        .tree ul {
-          padding-top: 20px;
-        }
-
-        .tree li {
-          padding: 0 0 20px;
-        }
-
-        .tree li::before,
-        .tree li::after,
-        .tree ul ul::before {
-          display: none;
-        }
-
-        .tree li:not(:last-child)::after {
-          top: auto;
-          right: auto;
-          bottom: 0;
-          left: 50%;
-          display: block;
-          width: 0;
-          height: 20px;
-          border: 0;
-          border-left: 1px solid #c7c9cc;
-        }
-
-        .node {
-          width: min(100%, 310px);
-        }
-      }
     </style>
   </head>
   <body>
     <main>
-      <h1>Homogeneous Equation Solution Tree</h1>
-      <p class="intro">A guide to first-order linear differential equations.</p>
+      <div class="page-controls">
+        <nav id="language-switch" class="language-switch" aria-label="Language">
+          <button class="language-button" type="button" data-language="pl" aria-label="Polski" aria-pressed="false">🇵🇱 PL</button>
+          <button class="language-button" type="button" data-language="en" aria-label="English" aria-pressed="true">🇬🇧 GB</button>
+        </nav>
+      </div>
+      <h1 id="page-title">First-Order Linear Differential Equations</h1>
+      <p id="page-intro" class="intro">Procedures and worked examples for homogeneous and nonhomogeneous equations.</p>
 
-      <nav class="tree" aria-label="Procedure for solving a homogeneous equation">
-        <ul>
-          <li>
-            <div class="node root">
-              <strong>Standard form</strong>
-              <span class="math">y′ + P(x)y = 0</span>
-              <br>
-              Rearrange the equation on an interval where the coefficients are defined.
-            </div>
-            <ul>
-              <li>
-                <p class="branch-label">Special case</p>
-                <div class="node">
-                  <strong>Check y = 0</strong>
-                  It is a solution of the equation and is included in the general solution.
-                </div>
-              </li>
-              <li>
-                <p class="branch-label">For y ≠ 0</p>
-                <div class="node">
-                  <strong>Separate variables</strong>
-                  <span class="math">dy / y = −P(x) dx</span>
-                </div>
-                <ul>
-                  <li>
-                    <div class="node">
-                      <strong>Integrate both sides</strong>
-                      <span class="math">ln |y| = −∫ P(x) dx + C</span>
-                    </div>
-                    <ul>
-                      <li>
-                        <div class="node">
-                          <strong>Solve for y and verify the result</strong>
-                          <span class="math">y = C · e<sup>−∫P(x)dx</sup></span>
-                          <br>
-                          The constant <span class="math">C ∈ ℝ</span>; the formula also includes the zero solution.
-                        </div>
-                      </li>
-                    </ul>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </li>
-        </ul>
-      </nav>
+      <section id="solution-grid" class="solution-grid" aria-label="Differential equation procedures">
+        <div id="column-headings" class="column-headings" role="row"></div>
+        <div id="solution-rows" class="solution-rows" role="rowgroup"></div>
+      </section>
     </main>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // Add procedures in `columns`, then provide one matching entry per step.
+        const columns = [
+          {
+            id: "homogeneous",
+            title: { en: "Homogeneous equation", pl: "Równanie jednorodne" },
+            className: "homogeneous-cell",
+            exampleColumnId: "examples",
+          },
+          {
+            id: "examples",
+            title: { en: "Worked examples", pl: "Przykłady" },
+            className: "worked-example-cell",
+          },
+          {
+            id: "nonhomogeneous",
+            title: { en: "Nonhomogeneous equation", pl: "Równanie niejednorodne" },
+            className: "nonhomogeneous-cell",
+            exampleColumnId: "nonhomogeneous-examples",
+          },
+          {
+            id: "nonhomogeneous-examples",
+            title: { en: "Nonhomogeneous worked example", pl: "Przykład równania niejednorodnego" },
+            className: "worked-example-cell",
+          },
+        ];
+
+        const steps = [
+          {
+            homogeneous: String.raw`<strong>1. Standard form</strong>
+              <span class="math">\(\dfrac{dy}{dx} + P(x)y = 0\)</span>
+              <br>Write the equation on an interval where the coefficients are defined.`,
+            examples: String.raw`<span class="math">\(\dfrac{dy}{dx} + 2y = 0\)</span>, where \(P(x) = 2\).`,
+            nonhomogeneous: String.raw`<strong>1. Standard form</strong>
+              <span class="math">\(\dfrac{dy}{dx} + P(x)y = Q(x)\)</span>
+              <br>Require \(Q(x) \not\equiv 0\) for a genuinely nonhomogeneous equation.`,
+            "nonhomogeneous-examples": String.raw`Consider the nonhomogeneous equation
+              <span class="math">\(\dfrac{dy}{dx} + 2y = 4\)</span>, with \(P(x) = 2\) and \(Q(x) = 4\).`,
+          },
+          {
+            homogeneous: String.raw`<strong>2. Check \(y = 0\)</strong>
+              Substitute \(y = 0\) and \(\dfrac{dy}{dx} = 0\). If the equation is satisfied, record the zero solution.`,
+            examples: String.raw`Substitute \(y = 0\) and \(\dfrac{dy}{dx} = 0\):
+              <p class="math">\(0 + 2 \cdot 0 = 0\)</p>
+              Therefore, \(y = 0\) is a solution.`,
+            nonhomogeneous: String.raw`<strong>2. Check \(y = 0\)</strong>
+              Substitution gives \(0 = Q(x)\). The zero function is a solution only if \(Q(x) \equiv 0\); otherwise, continue.`,
+            "nonhomogeneous-examples": String.raw`Substitute \(y = 0\) and \(\dfrac{dy}{dx} = 0\):
+              <p class="math">\(0 + 2 \cdot 0 = 4\)</p>
+              This is false, so \(y = 0\) is not a solution.`,
+          },
+          {
+            homogeneous: String.raw`<strong>3. Separate the variables for \(y \ne 0\)</strong>
+              <span class="math">\(\dfrac{dy}{y} = -P(x)\,dx\)</span>`,
+            examples: String.raw`For \(y \ne 0\), divide by \(y\) and multiply by \(dx\):
+              <p class="math">\(\dfrac{dy}{y} = -2\,dx\)</p>`,
+            nonhomogeneous: String.raw`<strong>3. Solve the associated homogeneous equation</strong>
+              <span class="math">\(\dfrac{dy_h}{dx} + P(x)y_h = 0\)</span>
+              <p class="math">\(y_h = C e^{-\int P(x)\,dx}\)</p>`,
+            "nonhomogeneous-examples": String.raw`Solve the associated homogeneous equation:
+              <p class="math">\(\dfrac{dy_h}{dx} + 2y_h = 0\)</p>
+              <p class="math">\(y_h = C e^{-2x}\)</p>`,
+          },
+          {
+            homogeneous: String.raw`<strong>4. Integrate both sides</strong>
+              <span class="math">\(\ln |y| = -\int P(x)\,dx + C\)</span>`,
+            examples: String.raw`<span class="math">\(\ln |y| = -2x + C_1\)</span>`,
+            nonhomogeneous: String.raw`<strong>4. Vary the constant</strong>
+              Replace \(C\) with \(C(x)\):
+              <p class="math">\(y = C(x)e^{-\int P(x)\,dx}\)</p>`,
+            "nonhomogeneous-examples": String.raw`Replace \(C\) with \(C(x)\):
+              <p class="math">\(y = C(x)e^{-2x}\)</p>`,
+          },
+          {
+            homogeneous: String.raw`<strong>5. Solve for \(y\) and verify</strong>
+              <span class="math">\(y = C\,e^{-\int P(x)\,dx}\)</span>
+              <br>The constant \(C \in \mathbb{R}\); this formula includes the zero solution checked in step 2.`,
+            examples: String.raw`Exponentiate and absorb the sign and \(e^{C_1}\) into a new constant \(C\):
+              <p class="math">\(y = C e^{-2x}, \quad C \in \mathbb{R}\)</p>
+              This includes the zero solution from step 2 when \(C = 0\).`,
+            nonhomogeneous: String.raw`<strong>5. Substitute and solve for \(\dfrac{dC}{dx}\)</strong>
+              <span class="math">\(\dfrac{dC}{dx}e^{-\int P(x)\,dx} = Q(x)\)</span>
+              <p class="math">\(\dfrac{dC}{dx} = Q(x)e^{\int P(x)\,dx}\)</p>`,
+            "nonhomogeneous-examples": String.raw`Substitute \(y = C(x)e^{-2x}\) and solve for \(\dfrac{dC}{dx}\):
+              <p class="math">\(\dfrac{dC}{dx}e^{-2x} = 4\)</p>
+              <p class="math">\(\dfrac{dC}{dx} = 4e^{2x}\)</p>`,
+          },
+          {
+            homogeneous: "",
+            examples: "",
+            nonhomogeneous: String.raw`<strong>6. Integrate and write the general solution</strong>
+              <p class="math">\(C(x) = \int Q(x)e^{\int P(x)\,dx}\,dx + C_0\)</p>
+              <p class="math">\[y = e^{-\int P(x)\,dx}\left(\int Q(x)e^{\int P(x)\,dx}\,dx + C_0\right)\]</p>`,
+            "nonhomogeneous-examples": String.raw`Integrate \( \dfrac{dC}{dx} = 4e^{2x}\) and substitute into \(y = C(x)e^{-2x}\):
+              <p class="math">\(C(x) = 2e^{2x} + C_0\)</p>
+              <p class="math">\(y = 2 + C_0e^{-2x}\)</p>
+              Verify:
+              <p class="math">\(\dfrac{dy}{dx} + 2y = -2C_0e^{-2x} + 4 + 2C_0e^{-2x} = 4\)</p>`,
+          },
+        ];
+
+        const polishSteps = [
+          {
+            homogeneous: String.raw`<strong>1. Postać standardowa</strong>
+              <span class="math">\(\dfrac{dy}{dx} + P(x)y = 0\)</span>
+              <br>Zapisz równanie na przedziale, na którym współczynniki są określone.`,
+            examples: String.raw`<span class="math">\(\dfrac{dy}{dx} + 2y = 0\)</span>, gdzie \(P(x) = 2\).`,
+            nonhomogeneous: String.raw`<strong>1. Postać standardowa</strong>
+              <span class="math">\(\dfrac{dy}{dx} + P(x)y = Q(x)\)</span>
+              <br>Dla równania rzeczywiście niejednorodnego wymagaj \(Q(x) \not\equiv 0\).`,
+            "nonhomogeneous-examples": String.raw`Rozważ równanie niejednorodne
+              <span class="math">\(\dfrac{dy}{dx} + 2y = 4\)</span>, gdzie \(P(x) = 2\) i \(Q(x) = 4\).`,
+          },
+          {
+            homogeneous: String.raw`<strong>2. Sprawdź \(y = 0\)</strong>
+              Podstaw \(y = 0\) oraz \(\dfrac{dy}{dx} = 0\). Jeśli równanie jest spełnione, zapisz rozwiązanie zerowe.`,
+            examples: String.raw`Podstaw \(y = 0\) oraz \(\dfrac{dy}{dx} = 0\):
+              <p class="math">\(0 + 2 \cdot 0 = 0\)</p>
+              Zatem \(y = 0\) jest rozwiązaniem.`,
+            nonhomogeneous: String.raw`<strong>2. Sprawdź \(y = 0\)</strong>
+              Po podstawieniu otrzymujemy \(0 = Q(x)\). Funkcja zerowa jest rozwiązaniem tylko wtedy, gdy \(Q(x) \equiv 0\); w przeciwnym razie przejdź dalej.`,
+            "nonhomogeneous-examples": String.raw`Podstaw \(y = 0\) oraz \(\dfrac{dy}{dx} = 0\):
+              <p class="math">\(0 + 2 \cdot 0 = 4\)</p>
+              To zdanie jest fałszywe, więc \(y = 0\) nie jest rozwiązaniem.`,
+          },
+          {
+            homogeneous: String.raw`<strong>3. Rozdziel zmienne dla \(y \ne 0\)</strong>
+              <span class="math">\(\dfrac{dy}{y} = -P(x)\,dx\)</span>`,
+            examples: String.raw`Dla \(y \ne 0\) podziel przez \(y\) i pomnóż przez \(dx\):
+              <p class="math">\(\dfrac{dy}{y} = -2\,dx\)</p>`,
+            nonhomogeneous: String.raw`<strong>3. Rozwiąż odpowiadające równanie jednorodne</strong>
+              <span class="math">\(\dfrac{dy_h}{dx} + P(x)y_h = 0\)</span>
+              <p class="math">\(y_h = C e^{-\int P(x)\,dx}\)</p>`,
+            "nonhomogeneous-examples": String.raw`Rozwiąż odpowiadające równanie jednorodne:
+              <p class="math">\(\dfrac{dy_h}{dx} + 2y_h = 0\)</p>
+              <p class="math">\(y_h = C e^{-2x}\)</p>`,
+          },
+          {
+            homogeneous: String.raw`<strong>4. Scałkuj obie strony</strong>
+              <span class="math">\(\ln |y| = -\int P(x)\,dx + C\)</span>`,
+            examples: String.raw`<span class="math">\(\ln |y| = -2x + C_1\)</span>`,
+            nonhomogeneous: String.raw`<strong>4. Zastosuj uzmiennianie stałej</strong>
+              Zastąp \(C\) przez \(C(x)\):
+              <p class="math">\(y = C(x)e^{-\int P(x)\,dx}\)</p>`,
+            "nonhomogeneous-examples": String.raw`Zastąp \(C\) przez \(C(x)\):
+              <p class="math">\(y = C(x)e^{-2x}\)</p>`,
+          },
+          {
+            homogeneous: String.raw`<strong>5. Wyznacz \(y\) i sprawdź rozwiązanie</strong>
+              <span class="math">\(y = C\,e^{-\int P(x)\,dx}\)</span>
+              <br>Stała \(C \in \mathbb{R}\); wzór obejmuje rozwiązanie zerowe sprawdzone w kroku 2.`,
+            examples: String.raw`Zastosuj funkcję wykładniczą i włącz znak oraz \(e^{C_1}\) do nowej stałej \(C\):
+              <p class="math">\(y = C e^{-2x}, \quad C \in \mathbb{R}\)</p>
+              Dla \(C = 0\) otrzymujemy rozwiązanie zerowe z kroku 2.`,
+            nonhomogeneous: String.raw`<strong>5. Podstaw i wyznacz \(\dfrac{dC}{dx}\)</strong>
+              <span class="math">\(\dfrac{dC}{dx}e^{-\int P(x)\,dx} = Q(x)\)</span>
+              <p class="math">\(\dfrac{dC}{dx} = Q(x)e^{\int P(x)\,dx}\)</p>`,
+            "nonhomogeneous-examples": String.raw`Podstaw \(y = C(x)e^{-2x}\) i wyznacz \(\dfrac{dC}{dx}\):
+              <p class="math">\(\dfrac{dC}{dx}e^{-2x} = 4\)</p>
+              <p class="math">\(\dfrac{dC}{dx} = 4e^{2x}\)</p>`,
+          },
+          {
+            homogeneous: "",
+            examples: "",
+            nonhomogeneous: String.raw`<strong>6. Scałkuj i zapisz rozwiązanie ogólne</strong>
+              <p class="math">\(C(x) = \int Q(x)e^{\int P(x)\,dx}\,dx + C_0\)</p>
+              <p class="math">\[y = e^{-\int P(x)\,dx}\left(\int Q(x)e^{\int P(x)\,dx}\,dx + C_0\right)\]</p>`,
+            "nonhomogeneous-examples": String.raw`Scałkuj równanie \( \dfrac{dC}{dx} = 4e^{2x}\) i podstaw do \(y = C(x)e^{-2x}\):
+              <p class="math">\(C(x) = 2e^{2x} + C_0\)</p>
+              <p class="math">\(y = 2 + C_0e^{-2x}\)</p>
+              Sprawdzenie:
+              <p class="math">\(\dfrac{dy}{dx} + 2y = -2C_0e^{-2x} + 4 + 2C_0e^{-2x} = 4\)</p>`,
+          },
+        ];
+
+        const pageText = {
+          en: {
+            title: "First-Order Linear Differential Equations",
+            intro: "Procedures and worked examples for homogeneous and nonhomogeneous equations.",
+            ariaLabel: "Differential equation procedures and worked examples",
+            hide: "HIDE",
+            show: "SHOW",
+            toggleHide: "Hide worked examples for {procedure}",
+            toggleShow: "Show worked examples for {procedure}",
+            languageLabel: "Language",
+          },
+          pl: {
+            title: "Równania różniczkowe liniowe I rzędu",
+            intro: "Procedury i przykłady rozwiązywania równań jednorodnych oraz niejednorodnych.",
+            ariaLabel: "Procedury rozwiązywania równań różniczkowych i przykłady",
+            hide: "UKRYJ",
+            show: "POKAŻ",
+            toggleHide: "Ukryj przykłady dla procedury: {procedure}",
+            toggleShow: "Pokaż przykłady dla procedury: {procedure}",
+            languageLabel: "Język",
+          },
+        };
+
+        const grid = document.querySelector("#solution-grid");
+        const headings = document.querySelector("#column-headings");
+        const rowsContainer = document.querySelector("#solution-rows");
+        const titleElement = document.querySelector("#page-title");
+        const introElement = document.querySelector("#page-intro");
+        const procedureColumns = columns.filter((column) => column.exampleColumnId);
+        const headingElements = new Map();
+        const labelElements = new Map();
+        const exampleButtons = new Map();
+        const hiddenExampleColumns = new Set();
+        const rowElements = [];
+        let activeLanguage = "en";
+
+        const columnIds = new Set(columns.map((column) => column.id));
+        if (columnIds.size !== columns.length) {
+          throw new Error("Each solution table column must have a unique id.");
+        }
+        if (procedureColumns.some((column) => !columnIds.has(column.exampleColumnId))) {
+          throw new Error("Each procedure visibility toggle must reference an existing examples column.");
+        }
+        if (new Set(procedureColumns.map((column) => column.exampleColumnId)).size !== procedureColumns.length) {
+          throw new Error("Each worked examples column must be controlled by only one procedure.");
+        }
+        if (polishSteps.length !== steps.length) {
+          throw new Error("Each procedure step must have a Polish translation.");
+        }
+
+        [steps, polishSteps].forEach((localizedSteps, languageIndex) => {
+          localizedSteps.forEach((step, index) => {
+            columns.forEach((column) => {
+              if (typeof step[column.id] !== "string") {
+                const language = languageIndex === 0 ? "English" : "Polish";
+                throw new Error(
+                  `${language} step ${index + 1} is missing a value for the ${column.title.en} column.`,
+                );
+              }
+            });
+          });
+        });
+
+        grid.setAttribute("role", "table");
+
+        columns.forEach((column, columnIndex) => {
+          const heading = document.createElement("div");
+          heading.className = "column-heading";
+          heading.dataset.column = column.id;
+          heading.style.gridColumn = String(columnIndex + 1);
+          heading.style.gridRow = "1";
+          heading.setAttribute("role", "columnheader");
+
+          const title = document.createElement("h2");
+          title.textContent = column.title.en;
+          heading.append(title);
+          headingElements.set(column.id, title);
+
+          const procedureColumn = procedureColumns.find((procedure) => procedure.id === column.id);
+          if (procedureColumn) {
+            heading.classList.add("procedure-heading");
+            const button = document.createElement("button");
+            button.className = "toggle-examples";
+            button.type = "button";
+            button.dataset.exampleColumn = procedureColumn.exampleColumnId;
+            button.setAttribute("aria-controls", "solution-grid");
+            button.setAttribute("aria-expanded", "true");
+            heading.append(button);
+            exampleButtons.set(procedureColumn.exampleColumnId, button);
+          }
+
+          headings.append(heading);
+        });
+
+        steps.forEach((step, index) => {
+          const row = document.createElement("div");
+          row.className = "solution-row";
+          row.setAttribute("role", "row");
+          row.dataset.stepIndex = String(index);
+          rowElements.push(row);
+
+          columns.forEach((column, columnIndex) => {
+            if (step[column.id].trim() === "") {
+              return;
+            }
+
+            const cell = document.createElement("div");
+            cell.className = `table-cell ${column.className}`;
+            cell.dataset.column = column.id;
+            cell.style.gridColumn = String(columnIndex + 1);
+            cell.style.gridRow = String(index + 2);
+            cell.setAttribute("role", "cell");
+
+            const label = document.createElement("strong");
+            label.className = "mobile-column-label";
+            label.textContent = column.title.en;
+            cell.append(label);
+            if (!labelElements.has(column.id)) {
+              labelElements.set(column.id, []);
+            }
+            labelElements.get(column.id).push(label);
+
+            const content = document.createElement("div");
+            content.className = "cell-content";
+            content.innerHTML = step[column.id];
+            content.dataset.stepIndex = String(index);
+            content.dataset.column = column.id;
+            cell.append(content);
+            row.append(cell);
+          });
+
+          rowsContainer.append(row);
+        });
+
+        const updateVisibleColumns = () => {
+          grid.style.setProperty(
+            "--grid-template",
+            columns
+              .filter((column) => !hiddenExampleColumns.has(column.id))
+              .map((column) => `${column.width}px`)
+              .join(" "),
+          );
+        };
+
+        const renderMath = () => {
+          document.querySelectorAll(".cell-content").forEach((element) => {
+            renderMathInElement(element, {
+              delimiters: [
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true },
+              ],
+            });
+          });
+        };
+
+        const measureColumnWidths = () => {
+          grid.style.setProperty("--grid-template", columns.map(() => "280px").join(" "));
+          columns.forEach((column) => {
+            grid.querySelectorAll(`[data-column="${column.id}"][hidden]`).forEach((element) => {
+              element.hidden = false;
+            });
+          });
+
+          columns.forEach((column) => {
+            const heading = headingElements.get(column.id).parentElement;
+            const formulaWidth = Math.max(
+              0,
+              ...[...grid.querySelectorAll(`.cell-content[data-column="${column.id}"] .katex`)]
+                .map((formula) => formula.getBoundingClientRect().width),
+              ...[...grid.querySelectorAll(`.cell-content[data-column="${column.id}"] .katex-display`)]
+                .map((formula) => formula.scrollWidth),
+            );
+            column.width = Math.ceil(Math.max(280, heading.scrollWidth, formulaWidth + 44));
+          });
+
+          hiddenExampleColumns.forEach((columnId) => {
+            grid.querySelectorAll(`[data-column="${columnId}"]`).forEach((element) => {
+              element.hidden = true;
+            });
+          });
+          updateVisibleColumns();
+        };
+
+        const setLanguage = (language) => {
+          activeLanguage = language;
+          const text = pageText[language];
+          const localizedSteps = language === "pl" ? polishSteps : steps;
+
+          document.documentElement.lang = language;
+          document.title = text.title;
+          titleElement.textContent = text.title;
+          introElement.textContent = text.intro;
+          grid.setAttribute("aria-label", text.ariaLabel);
+          document.querySelector("#language-switch").setAttribute("aria-label", text.languageLabel);
+
+          columns.forEach((column) => {
+            headingElements.get(column.id).textContent = column.title[language];
+            labelElements.get(column.id).forEach((label) => {
+              label.textContent = column.title[language];
+            });
+          });
+
+          rowElements.forEach((row, index) => {
+            row.setAttribute("aria-label", `${language === "pl" ? "Krok" : "Step"} ${index + 1}`);
+          });
+
+          document.querySelectorAll(".cell-content").forEach((element) => {
+            const rowIndex = Number(element.dataset.stepIndex);
+            const columnId = element.dataset.column;
+            element.innerHTML = localizedSteps[rowIndex][columnId];
+          });
+
+          exampleButtons.forEach((button, exampleColumnId) => {
+            const examplesAreVisible = !hiddenExampleColumns.has(exampleColumnId);
+            const procedure = procedureColumns.find(
+              (column) => column.exampleColumnId === exampleColumnId,
+            );
+            button.textContent = examplesAreVisible ? text.hide : text.show;
+            button.setAttribute(
+              "aria-label",
+              (examplesAreVisible ? text.toggleHide : text.toggleShow).replace(
+                "{procedure}",
+                procedure.title[language],
+              ),
+            );
+          });
+          document.querySelectorAll(".language-button").forEach((button) => {
+            button.setAttribute("aria-pressed", String(button.dataset.language === language));
+          });
+
+          renderMath();
+          measureColumnWidths();
+        };
+
+        document.querySelectorAll(".language-button").forEach((button) => {
+          button.addEventListener("click", () => setLanguage(button.dataset.language));
+        });
+
+        exampleButtons.forEach((button, exampleColumnId) => {
+          button.addEventListener("click", () => {
+            const isExpanded = button.getAttribute("aria-expanded") === "true";
+            const text = pageText[activeLanguage];
+
+            if (isExpanded) {
+              hiddenExampleColumns.add(exampleColumnId);
+            } else {
+              hiddenExampleColumns.delete(exampleColumnId);
+            }
+
+            grid.querySelectorAll(`[data-column="${exampleColumnId}"]`).forEach((element) => {
+              element.hidden = isExpanded;
+            });
+            measureColumnWidths();
+            button.setAttribute("aria-expanded", String(!isExpanded));
+            button.textContent = isExpanded ? text.show : text.hide;
+            const procedure = procedureColumns.find(
+              (column) => column.exampleColumnId === exampleColumnId,
+            );
+            button.setAttribute(
+              "aria-label",
+              (isExpanded ? text.toggleShow : text.toggleHide).replace(
+                "{procedure}",
+                procedure.title[activeLanguage],
+              ),
+            );
+          });
+        });
+
+        setLanguage(activeLanguage);
+      });
+    </script>
   </body>
 </html>
