@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>First-Order Linear Differential Equations</title>
+    <title>Differential Equations</title>
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/katex@0.19.1/dist/katex.min.css"
@@ -158,6 +158,8 @@
 
       .cell-content .math {
         display: block;
+        width: max-content;
+        max-width: none;
         white-space: nowrap;
       }
 
@@ -180,7 +182,7 @@
       }
 
       .mobile-column-label {
-        display: none;
+        display: block;
       }
 
       [hidden] {
@@ -201,7 +203,7 @@
           <button class="language-button" type="button" data-language="en" aria-label="English" aria-pressed="true">🇬🇧 GB</button>
         </nav>
       </div>
-      <h1 id="page-title">First-Order Linear Differential Equations</h1>
+      <h1 id="page-title">Differential Equations</h1>
       <p id="page-intro" class="intro">Procedures and worked examples for homogeneous and nonhomogeneous equations.</p>
 
       <section id="solution-grid" class="solution-grid" aria-label="Differential equation procedures">
@@ -223,6 +225,7 @@
             id: "examples",
             title: { en: "Worked examples", pl: "Przykłady" },
             className: "worked-example-cell",
+            stageColumnId: "homogeneous",
           },
           {
             id: "nonhomogeneous",
@@ -234,6 +237,7 @@
             id: "nonhomogeneous-examples",
             title: { en: "Nonhomogeneous worked example", pl: "Przykład równania niejednorodnego" },
             className: "worked-example-cell",
+            stageColumnId: "nonhomogeneous",
           },
         ];
 
@@ -251,15 +255,17 @@
           },
           {
             homogeneous: String.raw`<strong>2. Check \(y = 0\)</strong>
-              Substitute \(y = 0\) and \(\dfrac{dy}{dx} = 0\). If the equation is satisfied, record the zero solution.`,
+              Substitute \(y = 0\) and \(\dfrac{dy}{dx} = 0\). If the left-hand side is identically equal to the right-hand side \((0 \equiv Q(x))\), record the identically zero solution \(y(x) \equiv 0\). Otherwise, continue.`,
             examples: String.raw`Substitute \(y = 0\) and \(\dfrac{dy}{dx} = 0\):
               <p class="math">\(0 + 2 \cdot 0 = 0\)</p>
-              Therefore, \(y = 0\) is a solution.`,
+              Therefore, \(y(x) \equiv 0\) is a solution.
+              <p class="math">\(\therefore\ y(x) \equiv 0\)</p>`,
             nonhomogeneous: String.raw`<strong>2. Check \(y = 0\)</strong>
-              Substitution gives \(0 = Q(x)\). The zero function is a solution only if \(Q(x) \equiv 0\); otherwise, continue.`,
+              Substitute \(y = 0\) and \(\dfrac{dy}{dx} = 0\). If the left-hand side is identically equal to the right-hand side \((0 \equiv Q(x))\), record the identically zero solution \(y(x) \equiv 0\). Otherwise, continue.`,
             "nonhomogeneous-examples": String.raw`Substitute \(y = 0\) and \(\dfrac{dy}{dx} = 0\):
               <p class="math">\(0 + 2 \cdot 0 = 4\)</p>
-              This is false, so \(y = 0\) is not a solution.`,
+              This is false, so \(y = 0\) is not a solution.
+              <p class="math">\(\therefore\ y(x) \not\equiv 0\)</p>`,
           },
           {
             homogeneous: String.raw`<strong>3. Separate the variables for \(y \ne 0\)</strong>
@@ -275,8 +281,12 @@
           },
           {
             homogeneous: String.raw`<strong>4. Integrate both sides</strong>
-              <span class="math">\(\ln |y| = -\int P(x)\,dx + C\)</span>`,
-            examples: String.raw`<span class="math">\(\ln |y| = -2x + C_1\)</span>`,
+              <span class="math">\(\ln |y| + C_y = -\int P(x)\,dx + C_x\)</span>
+              <br>The constants \(C_y\) and \(C_x\) come from the two indefinite integrals.`,
+            examples: String.raw`Integrate both sides:
+              <p class="math">\(\int \dfrac{1}{y}\,dy = -\int 2\,dx\)</p>
+              Evaluate the integrals, using a separate constant for each:
+              <p class="math">\(\ln |y| + C_y = -2x + C_x\)</p>`,
             nonhomogeneous: String.raw`<strong>4. Vary the constant</strong>
               Replace \(C\) with \(C(x)\):
               <p class="math">\(y = C(x)e^{-\int P(x)\,dx}\)</p>`,
@@ -284,12 +294,15 @@
               <p class="math">\(y = C(x)e^{-2x}\)</p>`,
           },
           {
-            homogeneous: String.raw`<strong>5. Solve for \(y\) and verify</strong>
-              <span class="math">\(y = C\,e^{-\int P(x)\,dx}\)</span>
-              <br>The constant \(C \in \mathbb{R}\); this formula includes the zero solution checked in step 2.`,
-            examples: String.raw`Exponentiate and absorb the sign and \(e^{C_1}\) into a new constant \(C\):
-              <p class="math">\(y = C e^{-2x}, \quad C \in \mathbb{R}\)</p>
-              This includes the zero solution from step 2 when \(C = 0\).`,
+            homogeneous: String.raw`<strong>5. Combine the integration constants</strong>
+              <span class="math">\(C_y, C_x \in \mathbb{R}\)</span>
+              <p class="math">\(C_0 = C_x - C_y \in \mathbb{R}\)</p>
+              Since the real numbers are closed under subtraction, \(C_0\) is an arbitrary real constant.
+              <p class="math">\(\ln |y| = -\int P(x)\,dx + C_0\)</p>`,
+            examples: String.raw`Rearrange the equation and combine the constants:
+              <p class="math">\(\ln |y| = -2x + C_x - C_y\)</p>
+              <p class="math">\(C_y, C_x \in \mathbb{R} \implies C_0 = C_x - C_y \in \mathbb{R}\)</p>
+              <p class="math">\(\ln |y| = -2x + C_0\)</p>`,
             nonhomogeneous: String.raw`<strong>5. Substitute and solve for \(\dfrac{dC}{dx}\)</strong>
               <span class="math">\(\dfrac{dC}{dx}e^{-\int P(x)\,dx} = Q(x)\)</span>
               <p class="math">\(\dfrac{dC}{dx} = Q(x)e^{\int P(x)\,dx}\)</p>`,
@@ -298,14 +311,36 @@
               <p class="math">\(\dfrac{dC}{dx} = 4e^{2x}\)</p>`,
           },
           {
+            homogeneous: String.raw`<strong>6. Solve for \(y\) and verify</strong>
+              Rearrange the result to write \(y\) as a constant multiple of a function of \(x\):
+              <p class="math">\(y = C_0 f(x)\)</p>
+              Include the zero solution from step 2 by allowing \(C_0 = 0\). Rename the arbitrary constant:
+              <p class="math">\(C = C_0\)</p>
+              The general solution is:
+              <p class="math">\(y = C f(x)\)</p>
+              Substitute it into the original equation to verify it.`,
+            examples: String.raw`Exponentiate both sides of \(\ln |y| = -2x + C_0\):
+              <p class="math">\(e^{\ln |y|} = e^{-2x + C_0}\)</p>
+              <p class="math">\(|y| = e^{C_0} e^{-2x}\)</p>
+              <p class="math">\(y = +e^{C_0}e^{-2x} \lor y = -e^{C_0}e^{-2x}\)</p>
+              <p class="math">\(C = +e^{C_0} \lor C = -e^{C_0} \implies C \in \mathbb{R}\setminus\{0\}\)</p>
+              For the stationary solution \(y(x) = 0\) (step 2):
+              <p class="math">\(y(x) \equiv 0 \implies Ce^{-2x} \equiv 0\)</p>
+              <p class="math">\(\left(\forall x \in \mathbb{R},\ Ce^{-2x} = 0 \land e^{-2x} \ne 0\right) \implies C = 0\)</p>
+              <p class="math">\(C \in \left(\mathbb{R}\setminus\{0\}\right)\cup\{0\} \implies C \in \mathbb{R}\)</p>
+              <p class="math">\(y = C e^{-2x}, \quad C \in \mathbb{R}\)</p>`,
+            nonhomogeneous: String.raw`<strong>6. Integrate to find \(C(x)\)</strong>
+              <p class="math">\(C(x) = \int Q(x)e^{\int P(x)\,dx}\,dx + C_0\)</p>`,
+            "nonhomogeneous-examples": String.raw`Integrate \(\dfrac{dC}{dx} = 4e^{2x}\):
+              <p class="math">\(C(x) = 2e^{2x} + C_0\)</p>`,
+          },
+          {
             homogeneous: "",
             examples: "",
-            nonhomogeneous: String.raw`<strong>6. Integrate and write the general solution</strong>
-              <p class="math">\(C(x) = \int Q(x)e^{\int P(x)\,dx}\,dx + C_0\)</p>
-              <p class="math">\[y = e^{-\int P(x)\,dx}\left(\int Q(x)e^{\int P(x)\,dx}\,dx + C_0\right)\]</p>`,
-            "nonhomogeneous-examples": String.raw`Integrate \( \dfrac{dC}{dx} = 4e^{2x}\) and substitute into \(y = C(x)e^{-2x}\):
-              <p class="math">\(C(x) = 2e^{2x} + C_0\)</p>
-              <p class="math">\(y = 2 + C_0e^{-2x}\)</p>
+            nonhomogeneous: String.raw`<strong>7. Substitute and write the general solution</strong>
+              <p class="math">\(C_0 \in \mathbb{R} \implies y = e^{-\int P(x)\,dx}\left(\int Q(x)e^{\int P(x)\,dx}\,dx + C_0\right)\)</p>`,
+            "nonhomogeneous-examples": String.raw`Substitute \(C(x)\) into \(y = C(x)e^{-2x}\):
+              <p class="math">\(C_0 \in \mathbb{R} \implies y = 2 + C_0e^{-2x}\)</p>
               Verify:
               <p class="math">\(\dfrac{dy}{dx} + 2y = -2C_0e^{-2x} + 4 + 2C_0e^{-2x} = 4\)</p>`,
           },
@@ -325,15 +360,17 @@
           },
           {
             homogeneous: String.raw`<strong>2. Sprawdź \(y = 0\)</strong>
-              Podstaw \(y = 0\) oraz \(\dfrac{dy}{dx} = 0\). Jeśli równanie jest spełnione, zapisz rozwiązanie zerowe.`,
+              Podstaw \(y = 0\) oraz \(\dfrac{dy}{dx} = 0\). Jeśli lewa strona jest tożsamościowo równa prawej \((0 \equiv Q(x))\), zanotuj rozwiązanie tożsamościowo zerowe \(y(x) \equiv 0\). W przeciwnym razie przejdź dalej.`,
             examples: String.raw`Podstaw \(y = 0\) oraz \(\dfrac{dy}{dx} = 0\):
               <p class="math">\(0 + 2 \cdot 0 = 0\)</p>
-              Zatem \(y = 0\) jest rozwiązaniem.`,
+              Zatem \(y(x) \equiv 0\) jest rozwiązaniem.
+              <p class="math">\(\therefore\ y(x) \equiv 0\)</p>`,
             nonhomogeneous: String.raw`<strong>2. Sprawdź \(y = 0\)</strong>
-              Po podstawieniu otrzymujemy \(0 = Q(x)\). Funkcja zerowa jest rozwiązaniem tylko wtedy, gdy \(Q(x) \equiv 0\); w przeciwnym razie przejdź dalej.`,
+              Podstaw \(y = 0\) oraz \(\dfrac{dy}{dx} = 0\). Jeśli lewa strona jest tożsamościowo równa prawej \((0 \equiv Q(x))\), zanotuj rozwiązanie tożsamościowo zerowe \(y(x) \equiv 0\). W przeciwnym razie przejdź dalej.`,
             "nonhomogeneous-examples": String.raw`Podstaw \(y = 0\) oraz \(\dfrac{dy}{dx} = 0\):
               <p class="math">\(0 + 2 \cdot 0 = 4\)</p>
-              To zdanie jest fałszywe, więc \(y = 0\) nie jest rozwiązaniem.`,
+              To zdanie jest fałszywe, więc \(y = 0\) nie jest rozwiązaniem.
+              <p class="math">\(\therefore\ y(x) \not\equiv 0\)</p>`,
           },
           {
             homogeneous: String.raw`<strong>3. Rozdziel zmienne dla \(y \ne 0\)</strong>
@@ -349,8 +386,12 @@
           },
           {
             homogeneous: String.raw`<strong>4. Scałkuj obie strony</strong>
-              <span class="math">\(\ln |y| = -\int P(x)\,dx + C\)</span>`,
-            examples: String.raw`<span class="math">\(\ln |y| = -2x + C_1\)</span>`,
+              <span class="math">\(\ln |y| + C_y = -\int P(x)\,dx + C_x\)</span>
+              <br>Stałe \(C_y\) i \(C_x\) pochodzą z dwóch całek nieoznaczonych.`,
+            examples: String.raw`Scałkuj obie strony:
+              <p class="math">\(\int \dfrac{1}{y}\,dy = -\int 2\,dx\)</p>
+              Oblicz całki, wprowadzając osobną stałą przy każdej:
+              <p class="math">\(\ln |y| + C_y = -2x + C_x\)</p>`,
             nonhomogeneous: String.raw`<strong>4. Zastosuj uzmiennianie stałej</strong>
               Zastąp \(C\) przez \(C(x)\):
               <p class="math">\(y = C(x)e^{-\int P(x)\,dx}\)</p>`,
@@ -358,12 +399,15 @@
               <p class="math">\(y = C(x)e^{-2x}\)</p>`,
           },
           {
-            homogeneous: String.raw`<strong>5. Wyznacz \(y\) i sprawdź rozwiązanie</strong>
-              <span class="math">\(y = C\,e^{-\int P(x)\,dx}\)</span>
-              <br>Stała \(C \in \mathbb{R}\); wzór obejmuje rozwiązanie zerowe sprawdzone w kroku 2.`,
-            examples: String.raw`Zastosuj funkcję wykładniczą i włącz znak oraz \(e^{C_1}\) do nowej stałej \(C\):
-              <p class="math">\(y = C e^{-2x}, \quad C \in \mathbb{R}\)</p>
-              Dla \(C = 0\) otrzymujemy rozwiązanie zerowe z kroku 2.`,
+            homogeneous: String.raw`<strong>5. Połącz stałe całkowania</strong>
+              <span class="math">\(C_y, C_x \in \mathbb{R}\)</span>
+              <p class="math">\(C_0 = C_x - C_y \in \mathbb{R}\)</p>
+              Ponieważ liczby rzeczywiste są zamknięte na odejmowanie, \(C_0\) jest dowolną stałą rzeczywistą.
+              <p class="math">\(\ln |y| = -\int P(x)\,dx + C_0\)</p>`,
+            examples: String.raw`Przekształć równanie i połącz stałe:
+              <p class="math">\(\ln |y| = -2x + C_x - C_y\)</p>
+              <p class="math">\(C_y, C_x \in \mathbb{R} \implies C_0 = C_x - C_y \in \mathbb{R}\)</p>
+              <p class="math">\(\ln |y| = -2x + C_0\)</p>`,
             nonhomogeneous: String.raw`<strong>5. Podstaw i wyznacz \(\dfrac{dC}{dx}\)</strong>
               <span class="math">\(\dfrac{dC}{dx}e^{-\int P(x)\,dx} = Q(x)\)</span>
               <p class="math">\(\dfrac{dC}{dx} = Q(x)e^{\int P(x)\,dx}\)</p>`,
@@ -372,14 +416,36 @@
               <p class="math">\(\dfrac{dC}{dx} = 4e^{2x}\)</p>`,
           },
           {
+            homogeneous: String.raw`<strong>6. Wyznacz \(y\) i sprawdź rozwiązanie</strong>
+              Przekształć wynik tak, aby zapisać \(y\) jako iloczyn stałej i funkcji zmiennej \(x\):
+              <p class="math">\(y = C_0 f(x)\)</p>
+              Uwzględnij rozwiązanie zerowe z kroku 2, dopuszczając \(C_0 = 0\). Następnie oznacz stałą przez \(C\):
+              <p class="math">\(C = C_0\)</p>
+              Rozwiązanie ogólne ma postać:
+              <p class="math">\(y = C f(x)\)</p>
+              Podstaw je do równania wyjściowego, aby sprawdzić rozwiązanie.`,
+            examples: String.raw`Zastosuj funkcję wykładniczą do obu stron równania \(\ln |y| = -2x + C_0\):
+              <p class="math">\(e^{\ln |y|} = e^{-2x + C_0}\)</p>
+              <p class="math">\(|y| = e^{C_0} e^{-2x}\)</p>
+              <p class="math">\(y = +e^{C_0}e^{-2x} \lor y = -e^{C_0}e^{-2x}\)</p>
+              <p class="math">\(C = +e^{C_0} \lor C = -e^{C_0} \implies C \in \mathbb{R}\setminus\{0\}\)</p>
+              Dla rozwiązania stacjonarnego \(y(x) = 0\) (krok 2):
+              <p class="math">\(y(x) \equiv 0 \implies Ce^{-2x} \equiv 0\)</p>
+              <p class="math">\(\left(\forall x \in \mathbb{R},\ Ce^{-2x} = 0 \land e^{-2x} \ne 0\right) \implies C = 0\)</p>
+              <p class="math">\(C \in \left(\mathbb{R}\setminus\{0\}\right)\cup\{0\} \implies C \in \mathbb{R}\)</p>
+              <p class="math">\(y = C e^{-2x}, \quad C \in \mathbb{R}\)</p>`,
+            nonhomogeneous: String.raw`<strong>6. Scałkuj, aby wyznaczyć \(C(x)\)</strong>
+              <p class="math">\(C(x) = \int Q(x)e^{\int P(x)\,dx}\,dx + C_0\)</p>`,
+            "nonhomogeneous-examples": String.raw`Scałkuj równanie \(\dfrac{dC}{dx} = 4e^{2x}\):
+              <p class="math">\(C(x) = 2e^{2x} + C_0\)</p>`,
+          },
+          {
             homogeneous: "",
             examples: "",
-            nonhomogeneous: String.raw`<strong>6. Scałkuj i zapisz rozwiązanie ogólne</strong>
-              <p class="math">\(C(x) = \int Q(x)e^{\int P(x)\,dx}\,dx + C_0\)</p>
-              <p class="math">\[y = e^{-\int P(x)\,dx}\left(\int Q(x)e^{\int P(x)\,dx}\,dx + C_0\right)\]</p>`,
-            "nonhomogeneous-examples": String.raw`Scałkuj równanie \( \dfrac{dC}{dx} = 4e^{2x}\) i podstaw do \(y = C(x)e^{-2x}\):
-              <p class="math">\(C(x) = 2e^{2x} + C_0\)</p>
-              <p class="math">\(y = 2 + C_0e^{-2x}\)</p>
+            nonhomogeneous: String.raw`<strong>7. Podstaw i zapisz rozwiązanie ogólne</strong>
+              <p class="math">\(C_0 \in \mathbb{R} \implies y = e^{-\int P(x)\,dx}\left(\int Q(x)e^{\int P(x)\,dx}\,dx + C_0\right)\)</p>`,
+            "nonhomogeneous-examples": String.raw`Podstaw \(C(x)\) do \(y = C(x)e^{-2x}\):
+              <p class="math">\(C_0 \in \mathbb{R} \implies y = 2 + C_0e^{-2x}\)</p>
               Sprawdzenie:
               <p class="math">\(\dfrac{dy}{dx} + 2y = -2C_0e^{-2x} + 4 + 2C_0e^{-2x} = 4\)</p>`,
           },
@@ -387,7 +453,7 @@
 
         const pageText = {
           en: {
-            title: "First-Order Linear Differential Equations",
+            title: "Differential Equations",
             intro: "Procedures and worked examples for homogeneous and nonhomogeneous equations.",
             ariaLabel: "Differential equation procedures and worked examples",
             hide: "HIDE",
@@ -397,7 +463,7 @@
             languageLabel: "Language",
           },
           pl: {
-            title: "Równania różniczkowe liniowe I rzędu",
+            title: "Równania różniczkowe",
             intro: "Procedury i przykłady rozwiązywania równań jednorodnych oraz niejednorodnych.",
             ariaLabel: "Procedury rozwiązywania równań różniczkowych i przykłady",
             hide: "UKRYJ",
@@ -428,6 +494,9 @@
         if (procedureColumns.some((column) => !columnIds.has(column.exampleColumnId))) {
           throw new Error("Each procedure visibility toggle must reference an existing examples column.");
         }
+        if (columns.some((column) => column.stageColumnId && !columnIds.has(column.stageColumnId))) {
+          throw new Error("Each examples column must reference an existing procedure column.");
+        }
         if (new Set(procedureColumns.map((column) => column.exampleColumnId)).size !== procedureColumns.length) {
           throw new Error("Each worked examples column must be controlled by only one procedure.");
         }
@@ -451,6 +520,8 @@
         grid.setAttribute("role", "table");
 
         columns.forEach((column, columnIndex) => {
+          labelElements.set(column.id, []);
+
           const heading = document.createElement("div");
           heading.className = "column-heading";
           heading.dataset.column = column.id;
@@ -498,14 +569,13 @@
             cell.style.gridRow = String(index + 2);
             cell.setAttribute("role", "cell");
 
-            const label = document.createElement("strong");
-            label.className = "mobile-column-label";
-            label.textContent = column.title.en;
-            cell.append(label);
-            if (!labelElements.has(column.id)) {
-              labelElements.set(column.id, []);
+            if (column.stageColumnId) {
+              const label = document.createElement("strong");
+              label.className = "mobile-column-label";
+              label.dataset.stepIndex = String(index);
+              cell.append(label);
+              labelElements.get(column.id).push(label);
             }
-            labelElements.get(column.id).push(label);
 
             const content = document.createElement("div");
             content.className = "cell-content";
@@ -520,17 +590,23 @@
         });
 
         const updateVisibleColumns = () => {
+          const visibleColumns = columns.filter((column) => !hiddenExampleColumns.has(column.id));
           grid.style.setProperty(
             "--grid-template",
-            columns
-              .filter((column) => !hiddenExampleColumns.has(column.id))
-              .map((column) => `${column.width}px`)
-              .join(" "),
+            visibleColumns.map((column) => `${column.width}px`).join(" "),
           );
+
+          visibleColumns.forEach((column, index) => {
+            grid.querySelectorAll(`[data-column="${column.id}"]`).forEach((element) => {
+              if (element.classList.contains("column-heading") || element.classList.contains("table-cell")) {
+                element.style.gridColumn = String(index + 1);
+              }
+            });
+          });
         };
 
         const renderMath = () => {
-          document.querySelectorAll(".cell-content").forEach((element) => {
+          document.querySelectorAll(".cell-content, .mobile-column-label").forEach((element) => {
             renderMathInElement(element, {
               delimiters: [
                 { left: "\\(", right: "\\)", display: false },
@@ -552,7 +628,7 @@
             const heading = headingElements.get(column.id).parentElement;
             const formulaWidth = Math.max(
               0,
-              ...[...grid.querySelectorAll(`.cell-content[data-column="${column.id}"] .katex`)]
+              ...[...grid.querySelectorAll(`.cell-content[data-column="${column.id}"] .math`)]
                 .map((formula) => formula.getBoundingClientRect().width),
               ...[...grid.querySelectorAll(`.cell-content[data-column="${column.id}"] .katex-display`)]
                 .map((formula) => formula.scrollWidth),
@@ -583,7 +659,22 @@
           columns.forEach((column) => {
             headingElements.get(column.id).textContent = column.title[language];
             labelElements.get(column.id).forEach((label) => {
-              label.textContent = column.title[language];
+              if (column.stageColumnId) {
+                const stepIndex = Number(label.dataset.stepIndex);
+                const procedureStep = localizedSteps[stepIndex][column.stageColumnId];
+                const stageHeading = document.createElement("template");
+                stageHeading.innerHTML = procedureStep;
+                const stageTitle = stageHeading.content.querySelector("strong");
+
+                if (!stageTitle) {
+                  throw new Error(
+                    `Step ${stepIndex + 1} is missing a stage title for the ${column.title[language]} column.`,
+                  );
+                }
+                label.innerHTML = stageTitle.innerHTML;
+              } else {
+                label.textContent = column.title[language];
+              }
             });
           });
 
