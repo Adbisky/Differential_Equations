@@ -35,6 +35,13 @@
         margin: 0;
         min-width: 320px;
         background: #fff;
+        cursor: grab;
+      }
+
+      body.is-panning,
+      body.is-panning * {
+        cursor: grabbing !important;
+        user-select: none;
       }
 
       main {
@@ -264,8 +271,7 @@
               Substitute \(y = 0\) and \(\dfrac{dy}{dx} = 0\). If the left-hand side is identically equal to the right-hand side \((0 \equiv Q(x))\), record the identically zero solution \(y(x) \equiv 0\). Otherwise, continue.`,
             "nonhomogeneous-examples": String.raw`Substitute \(y = 0\) and \(\dfrac{dy}{dx} = 0\):
               <p class="math">\(0 + 2 \cdot 0 = 4\)</p>
-              This is false, so \(y = 0\) is not a solution.
-              <p class="math">\(\therefore\ y(x) \not\equiv 0\)</p>`,
+              <p class="math">\(0 + 2 \cdot 0 \ne 4 \implies y(x) \not\equiv 0\)</p>`,
           },
           {
             homogeneous: String.raw`<strong>3. Separate the variables for \(y \ne 0\)</strong>
@@ -304,10 +310,16 @@
               <p class="math">\(C_y, C_x \in \mathbb{R} \implies C_0 = C_x - C_y \in \mathbb{R}\)</p>
               <p class="math">\(\ln |y| = -2x + C_0\)</p>`,
             nonhomogeneous: String.raw`<strong>5. Substitute and solve for \(\dfrac{dC}{dx}\)</strong>
-              <span class="math">\(\dfrac{dC}{dx}e^{-\int P(x)\,dx} = Q(x)\)</span>
+              <span class="math">\(\dfrac{dC}{dx}e^{-\int P(x)\,dx} - P(x)C(x)e^{-\int P(x)\,dx} + P(x)C(x)e^{-\int P(x)\,dx} = Q(x)\)</span>
+              <p class="math">\(\dfrac{dC}{dx}e^{-\int P(x)\,dx} = Q(x)\)</p>
               <p class="math">\(\dfrac{dC}{dx} = Q(x)e^{\int P(x)\,dx}\)</p>`,
-            "nonhomogeneous-examples": String.raw`Substitute \(y = C(x)e^{-2x}\) and solve for \(\dfrac{dC}{dx}\):
+            "nonhomogeneous-examples": String.raw`Substitute \(y = C(x)e^{-2x}\). By the product rule:
+                <p class="math">\(\dfrac{d}{dx}\left(y\right) = \dfrac{d}{dx}\left(C(x)e^{-2x}\right)\)</p>
+              <p class="math">\(\dfrac{dy}{dx} = \dfrac{dC}{dx}e^{-2x} - 2C(x)e^{-2x}\)</p>
+              Substitute \(y\) and \(\dfrac{dy}{dx}\) into \(\dfrac{dy}{dx} + 2y = 4\):
+              <p class="math">\(\dfrac{dC}{dx}e^{-2x} - 2C(x)e^{-2x} + 2C(x)e^{-2x} = 4\)</p>
               <p class="math">\(\dfrac{dC}{dx}e^{-2x} = 4\)</p>
+              Multiply both sides by \(e^{2x}\):
               <p class="math">\(\dfrac{dC}{dx} = 4e^{2x}\)</p>`,
           },
           {
@@ -330,8 +342,15 @@
               <p class="math">\(C \in \left(\mathbb{R}\setminus\{0\}\right)\cup\{0\} \implies C \in \mathbb{R}\)</p>
               <p class="math">\(y = C e^{-2x}, \quad C \in \mathbb{R}\)</p>`,
             nonhomogeneous: String.raw`<strong>6. Integrate to find \(C(x)\)</strong>
-              <p class="math">\(C(x) = \int Q(x)e^{\int P(x)\,dx}\,dx + C_0\)</p>`,
-            "nonhomogeneous-examples": String.raw`Integrate \(\dfrac{dC}{dx} = 4e^{2x}\):
+              <p class="math">\(C(x) = \int Q(x)e^{\int P(x)\,dx}\,dx\)</p>`,
+            "nonhomogeneous-examples": String.raw`Integrate the equation:
+              <p class="math">\(\dfrac{dC}{dx} = 4e^{2x}\)</p>
+              Separate variables:
+              <p class="math">\(\mathrm{d}C = 4e^{2x}\,\mathrm{d}x\)</p>
+              Integrate both sides:
+              <p class="math">\(\int \mathrm{d}C = \int 4e^{2x}\,\mathrm{d}x\)</p>
+              <p class="math">\(C(x) = 4\int e^{2x}\,\mathrm{d}x\)</p>
+              <p class="math">\(C(x) = 4\cdot \dfrac{1}{2}e^{2x} + C_0\)</p>
               <p class="math">\(C(x) = 2e^{2x} + C_0\)</p>`,
           },
           {
@@ -339,10 +358,21 @@
             examples: "",
             nonhomogeneous: String.raw`<strong>7. Substitute and write the general solution</strong>
               <p class="math">\(C_0 \in \mathbb{R} \implies y = e^{-\int P(x)\,dx}\left(\int Q(x)e^{\int P(x)\,dx}\,dx + C_0\right)\)</p>`,
-            "nonhomogeneous-examples": String.raw`Substitute \(C(x)\) into \(y = C(x)e^{-2x}\):
-              <p class="math">\(C_0 \in \mathbb{R} \implies y = 2 + C_0e^{-2x}\)</p>
-              Verify:
-              <p class="math">\(\dfrac{dy}{dx} + 2y = -2C_0e^{-2x} + 4 + 2C_0e^{-2x} = 4\)</p>`,
+            "nonhomogeneous-examples": String.raw`Substitute \(C(x) = 2e^{2x} + C_0\) into \(y = C(x)e^{-2x}\):
+              <p class="math">\(y(x) = (2e^{2x} + C_0)e^{-2x}\)</p>
+              <p class="math">\(y(x) = 2e^{2x}e^{-2x} + C_0e^{-2x}\)</p>
+              <p class="math">\(y(x) = 2e^{2x-2x} + C_0e^{-2x}\)</p>
+              <p class="math">\(y(x) = 2e^0 + C_0e^{-2x}\)</p>
+              <p class="math">\(y(x) = 2 + C_0e^{-2x}, \quad C_0 \in \mathbb{R}\)</p>
+              Differentiate \(y(x)\):
+              <p class="math">\(\dfrac{dy}{dx} = \dfrac{d}{dx}\left(2 + C_0e^{-2x}\right)\)</p>
+              <p class="math">\(\dfrac{dy}{dx} = \dfrac{d}{dx}(2) + C_0\dfrac{d}{dx}\left(e^{-2x}\right)\)</p>
+              <p class="math">\(\dfrac{dy}{dx} = 0 + C_0e^{-2x}\dfrac{d}{dx}(-2x)\)</p>
+              <p class="math">\(\dfrac{dy}{dx} = 0 + C_0e^{-2x}(-2) = -2C_0e^{-2x}\)</p>
+              Verify the solution in \(\dfrac{dy}{dx} + 2y = 4\):
+              <p class="math">\(\dfrac{dy}{dx} + 2y = (-2C_0e^{-2x}) + 2(2 + C_0e^{-2x})\)</p>
+              <p class="math">\(\dfrac{dy}{dx} + 2y = -2C_0e^{-2x} + 4 + 2C_0e^{-2x}\)</p>
+              <p class="math">\(\dfrac{dy}{dx} + 2y = 4\)</p>`,
           },
         ];
 
@@ -369,8 +399,7 @@
               Podstaw \(y = 0\) oraz \(\dfrac{dy}{dx} = 0\). Jeśli lewa strona jest tożsamościowo równa prawej \((0 \equiv Q(x))\), zanotuj rozwiązanie tożsamościowo zerowe \(y(x) \equiv 0\). W przeciwnym razie przejdź dalej.`,
             "nonhomogeneous-examples": String.raw`Podstaw \(y = 0\) oraz \(\dfrac{dy}{dx} = 0\):
               <p class="math">\(0 + 2 \cdot 0 = 4\)</p>
-              To zdanie jest fałszywe, więc \(y = 0\) nie jest rozwiązaniem.
-              <p class="math">\(\therefore\ y(x) \not\equiv 0\)</p>`,
+              <p class="math">\(0 + 2 \cdot 0 \ne 4 \implies y(x) \not\equiv 0\)</p>`,
           },
           {
             homogeneous: String.raw`<strong>3. Rozdziel zmienne dla \(y \ne 0\)</strong>
@@ -409,10 +438,16 @@
               <p class="math">\(C_y, C_x \in \mathbb{R} \implies C_0 = C_x - C_y \in \mathbb{R}\)</p>
               <p class="math">\(\ln |y| = -2x + C_0\)</p>`,
             nonhomogeneous: String.raw`<strong>5. Podstaw i wyznacz \(\dfrac{dC}{dx}\)</strong>
-              <span class="math">\(\dfrac{dC}{dx}e^{-\int P(x)\,dx} = Q(x)\)</span>
+              <span class="math">\(\dfrac{dC}{dx}e^{-\int P(x)\,dx} - P(x)C(x)e^{-\int P(x)\,dx} + P(x)C(x)e^{-\int P(x)\,dx} = Q(x)\)</span>
+              <p class="math">\(\dfrac{dC}{dx}e^{-\int P(x)\,dx} = Q(x)\)</p>
               <p class="math">\(\dfrac{dC}{dx} = Q(x)e^{\int P(x)\,dx}\)</p>`,
-            "nonhomogeneous-examples": String.raw`Podstaw \(y = C(x)e^{-2x}\) i wyznacz \(\dfrac{dC}{dx}\):
+            "nonhomogeneous-examples": String.raw`Podstaw \(y = C(x)e^{-2x}\). Z reguły iloczynu:
+                <p class="math">\(\dfrac{d}{dx}\left(y\right) = \dfrac{d}{dx}\left(C(x)e^{-2x}\right)\)</p>
+              <p class="math">\(\dfrac{dy}{dx} = \dfrac{dC}{dx}e^{-2x} - 2C(x)e^{-2x}\)</p>
+              Podstaw \(y\) oraz \(\dfrac{dy}{dx}\) do równania \(\dfrac{dy}{dx} + 2y = 4\):
+              <p class="math">\(\dfrac{dC}{dx}e^{-2x} - 2C(x)e^{-2x} + 2C(x)e^{-2x} = 4\)</p>
               <p class="math">\(\dfrac{dC}{dx}e^{-2x} = 4\)</p>
+              Pomnóż obie strony przez \(e^{2x}\):
               <p class="math">\(\dfrac{dC}{dx} = 4e^{2x}\)</p>`,
           },
           {
@@ -435,8 +470,15 @@
               <p class="math">\(C \in \left(\mathbb{R}\setminus\{0\}\right)\cup\{0\} \implies C \in \mathbb{R}\)</p>
               <p class="math">\(y = C e^{-2x}, \quad C \in \mathbb{R}\)</p>`,
             nonhomogeneous: String.raw`<strong>6. Scałkuj, aby wyznaczyć \(C(x)\)</strong>
-              <p class="math">\(C(x) = \int Q(x)e^{\int P(x)\,dx}\,dx + C_0\)</p>`,
-            "nonhomogeneous-examples": String.raw`Scałkuj równanie \(\dfrac{dC}{dx} = 4e^{2x}\):
+              <p class="math">\(C(x) = \int Q(x)e^{\int P(x)\,dx}\,dx\)</p>`,
+            "nonhomogeneous-examples": String.raw`Scałkuj równanie:
+              <p class="math">\(\dfrac{dC}{dx} = 4e^{2x}\)</p>
+              Rozdziel zmienne:
+              <p class="math">\(\mathrm{d}C = 4e^{2x}\,\mathrm{d}x\)</p>
+              Scałkuj obie strony:
+              <p class="math">\(\int \mathrm{d}C = \int 4e^{2x}\,\mathrm{d}x\)</p>
+              <p class="math">\(C(x) = 4\int e^{2x}\,\mathrm{d}x\)</p>
+              <p class="math">\(C(x) = 4\cdot \dfrac{1}{2}e^{2x} + C_0\)</p>
               <p class="math">\(C(x) = 2e^{2x} + C_0\)</p>`,
           },
           {
@@ -444,10 +486,21 @@
             examples: "",
             nonhomogeneous: String.raw`<strong>7. Podstaw i zapisz rozwiązanie ogólne</strong>
               <p class="math">\(C_0 \in \mathbb{R} \implies y = e^{-\int P(x)\,dx}\left(\int Q(x)e^{\int P(x)\,dx}\,dx + C_0\right)\)</p>`,
-            "nonhomogeneous-examples": String.raw`Podstaw \(C(x)\) do \(y = C(x)e^{-2x}\):
-              <p class="math">\(C_0 \in \mathbb{R} \implies y = 2 + C_0e^{-2x}\)</p>
-              Sprawdzenie:
-              <p class="math">\(\dfrac{dy}{dx} + 2y = -2C_0e^{-2x} + 4 + 2C_0e^{-2x} = 4\)</p>`,
+            "nonhomogeneous-examples": String.raw`Podstaw \(C(x) = 2e^{2x} + C_0\) do \(y = C(x)e^{-2x}\):
+              <p class="math">\(y(x) = (2e^{2x} + C_0)e^{-2x}\)</p>
+              <p class="math">\(y(x) = 2e^{2x}e^{-2x} + C_0e^{-2x}\)</p>
+              <p class="math">\(y(x) = 2e^{2x-2x} + C_0e^{-2x}\)</p>
+              <p class="math">\(y(x) = 2e^0 + C_0e^{-2x}\)</p>
+              <p class="math">\(y(x) = 2 + C_0e^{-2x}, \quad C_0 \in \mathbb{R}\)</p>
+              Oblicz pochodną \(y(x)\):
+              <p class="math">\(\dfrac{dy}{dx} = \dfrac{d}{dx}\left(2 + C_0e^{-2x}\right)\)</p>
+              <p class="math">\(\dfrac{dy}{dx} = \dfrac{d}{dx}(2) + C_0\dfrac{d}{dx}\left(e^{-2x}\right)\)</p>
+              <p class="math">\(\dfrac{dy}{dx} = 0 + C_0e^{-2x}\dfrac{d}{dx}(-2x)\)</p>
+              <p class="math">\(\dfrac{dy}{dx} = 0 + C_0e^{-2x}(-2) = -2C_0e^{-2x}\)</p>
+              Sprawdź rozwiązanie w równaniu \(\dfrac{dy}{dx} + 2y = 4\):
+              <p class="math">\(\dfrac{dy}{dx} + 2y = (-2C_0e^{-2x}) + 2(2 + C_0e^{-2x})\)</p>
+              <p class="math">\(\dfrac{dy}{dx} + 2y = -2C_0e^{-2x} + 4 + 2C_0e^{-2x}\)</p>
+              <p class="math">\(\dfrac{dy}{dx} + 2y = 4\)</p>`,
           },
         ];
 
@@ -615,6 +668,62 @@
             });
           });
         };
+
+        let panStart = null;
+        const panThreshold = 4;
+
+        document.addEventListener("pointerdown", (event) => {
+          if (
+            event.pointerType !== "mouse" ||
+            event.button !== 0 ||
+            event.target.closest("button, a, input, select, textarea, [contenteditable='true']")
+          ) {
+            return;
+          }
+
+          panStart = {
+            pointerId: event.pointerId,
+            x: event.clientX,
+            y: event.clientY,
+            scrollX: window.scrollX,
+            scrollY: window.scrollY,
+            dragging: false,
+          };
+          document.documentElement.setPointerCapture(event.pointerId);
+        });
+
+        document.addEventListener("pointermove", (event) => {
+          if (!panStart || event.pointerId !== panStart.pointerId) {
+            return;
+          }
+
+          const deltaX = event.clientX - panStart.x;
+          const deltaY = event.clientY - panStart.y;
+          if (!panStart.dragging && Math.hypot(deltaX, deltaY) < panThreshold) {
+            return;
+          }
+
+          panStart.dragging = true;
+          document.body.classList.add("is-panning");
+          window.getSelection().removeAllRanges();
+          window.scrollTo(panStart.scrollX - deltaX, panStart.scrollY - deltaY);
+          event.preventDefault();
+        });
+
+        const stopPanning = (event) => {
+          if (!panStart || event.pointerId !== panStart.pointerId) {
+            return;
+          }
+
+          document.body.classList.remove("is-panning");
+          if (document.documentElement.hasPointerCapture(event.pointerId)) {
+            document.documentElement.releasePointerCapture(event.pointerId);
+          }
+          panStart = null;
+        };
+
+        document.addEventListener("pointerup", stopPanning);
+        document.addEventListener("pointercancel", stopPanning);
 
         const measureColumnWidths = () => {
           grid.style.setProperty("--grid-template", columns.map(() => "280px").join(" "));
